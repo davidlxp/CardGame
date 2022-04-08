@@ -75,10 +75,19 @@ namespace CardGame
             foreach (string s in split)
             {
                 int idx = -1;
-                Int32.TryParse(s, out idx);             // try to parse string to int
+                Int32.TryParse(s, out idx);                 // try to parse string to int
 
-                cardsReplaceIdx.Add(idx);               // add the index of cards to replace to list
+                cardsReplaceIdx.Add(idx);                   // add the index of cards to replace to list
             }
+        }
+
+
+        /// <summary>
+        /// Function clears the list for storing indexes of cards for removing
+        /// </summary>
+        public void cleanCardsReplaceIdx()
+        {
+            cardsReplaceIdx.Clear();
         }
 
 
