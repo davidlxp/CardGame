@@ -5,12 +5,13 @@ namespace CardGame
 {
     public class Gameboard
     {
-        int gamePlayed;                                    // round of games played between "start game" and "end game"
-        int gameWon;                                       // round of games won
+        int gamePlayed;                                            // round of games played between "start game" and "end game"
+        int gameWon;                                               // round of games won
 
-        public List<Player> playersInGame = new List<Player>();    // all players participated in the game when game is active
         public List<Card> cardsOnBoard = new List<Card>();         // the cards which on the gameboard
         public List<int> cardsReplaceIdx = new List<int>();        // the index of cards selected for replacement
+        public List<Player> playersInGame = new List<Player>();    // players in the game when the game is active
+
 
 
         public Gameboard()
@@ -33,6 +34,7 @@ namespace CardGame
         /// </summary>
         public void showCardsOnBoard()
         {
+            Console.WriteLine();
             for (int i = 0; i < getBoardCardsNum(); ++i)
             {
                 Card card = cardsOnBoard[i];
@@ -41,7 +43,6 @@ namespace CardGame
 
                 Console.WriteLine((i + 1) + ". " + suit + " " + rank);
             }
-            Console.WriteLine();
         }
 
 
@@ -92,6 +93,26 @@ namespace CardGame
 
 
         /// <summary>
+        /// Function clears the list represents the cards on the gameboard
+        /// </summary>
+        public void cleanCardsOnBoard()
+        {
+            cardsOnBoard.Clear();
+        }
+
+
+        /// <summary>
+        /// Function to clean both "cardsReplaceIdx" and "cardsOnBoard".
+        /// this prepare the gameboard for the next round of game
+        /// </summary>
+        public void emptyGameboard()
+        {
+            cleanCardsReplaceIdx();
+            cleanCardsOnBoard();
+        }
+
+
+        /// <summary>
         /// Function to increment gameWon variable
         /// </summary>
         public void updateGameWon()
@@ -112,7 +133,7 @@ namespace CardGame
         /// <summary>
         /// Function to increment gamePlayed variable
         /// </summary>
-        void updateGamePlayed()
+        public void updateGamePlayed()
         {
             gamePlayed++;
         }
@@ -121,7 +142,7 @@ namespace CardGame
         /// <summary>
         /// Function to return number of game played
         /// </summary>
-        int getGamePlayed()
+        public int getGamePlayed()
         {
             return gamePlayed;
         }
@@ -130,7 +151,7 @@ namespace CardGame
         /// <summary>
         /// Function to show x/y game won
         /// </summary>
-        void showWonHistory()
+        public void showWonHistory()
         {
             Console.WriteLine($"You've won {gameWon} out of {gamePlayed} games.");
         }

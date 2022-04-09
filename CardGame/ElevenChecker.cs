@@ -76,7 +76,7 @@ namespace CardGame
                 int sum = 0;
 
                 foreach (int i in board.cardsReplaceIdx)                // sum the value of 2 cards user selected 
-                    sum += board.cardsOnBoard[i].Rank;
+                    sum += board.cardsOnBoard[i - 1].Rank;
 
                 return (sum == 11);                                     // if the sum of cards is 11, the selection is correct
             }
@@ -86,16 +86,42 @@ namespace CardGame
 
                 foreach (int i in board.cardsReplaceIdx)
                 {
-                    int value = board.cardsOnBoard[i].Rank;             // get the rank of one card
+                    int value = board.cardsOnBoard[i - 1].Rank;           // get the rank of one card
                     pattern.Remove(value);                              // try to remove the value from "pattern" list
                 }
 
                 return (pattern.Count == 0);                            // if everything removed => user selected cards follows J, Q, K pattern
             }
-            else                                                    
+            else
                 return false;
-                                        
+
         }
+
+
+
+
+
+
+
+
+
+        //public bool cardsPatternValid(ref Gameboard board)
+        //{
+        //    return true;
+        //}
+
+        //public bool anyRemovableCards(ref Gameboard board)
+        //{
+        //    return true;
+        //}
+
+
+
+
+
+
+
+
 
 
         /// <summary>
@@ -126,7 +152,7 @@ namespace CardGame
             /* 2. Check if two cards sum up to 11 exists */
             bool pairElevenAvail = pairAvailable(valueOfCards, 11);
 
-            return (jqkAvail || pairElevenAvail);      
+            return (jqkAvail || pairElevenAvail);
         }
 
 
