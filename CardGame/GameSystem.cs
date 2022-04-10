@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CardGame
 {
-    public class System
+    public class GameSystem
     {
         ElevenChecker checker = new ElevenChecker();                               // Init Checker for the game
 
@@ -16,7 +16,7 @@ namespace CardGame
         /// <summary>
         /// Constructor of the system
         /// </summary>
-        public System(int numCardsOnBoard1)
+        public GameSystem(int numCardsOnBoard1)
         {
             numCardsOnBoard = numCardsOnBoard1;
         }

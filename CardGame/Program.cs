@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace CardGame
 {
@@ -7,7 +6,7 @@ namespace CardGame
     {
         static void Main(string[] args)
         {
-            System system = new System(9);
+            GameSystem system = new GameSystem(9);
 
             system.runProgram();
 
