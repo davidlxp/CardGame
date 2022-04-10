@@ -98,7 +98,7 @@ namespace CardGame
                 if (attempt == 0)
                     Console.WriteLine("\nPlease provide your credential below");
                 else
-                    Console.WriteLine("\nCredential wrong, please try another name!\n");
+                    Console.WriteLine("\nCredential wrong, please try again!\n");
 
                 Console.Write("Username: ");
                 username = Console.ReadLine();
