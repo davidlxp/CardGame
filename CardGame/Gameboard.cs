@@ -10,9 +10,7 @@ namespace CardGame
 
         public List<Card> cardsOnBoard = new List<Card>();         // the cards which on the gameboard
         public List<int> cardsReplaceIdx = new List<int>();        // the index of cards selected for replacement
-        public List<Player> playersInGame = new List<Player>();    // players in the game when the game is active
-
-
+      
 
         public Gameboard()
         {

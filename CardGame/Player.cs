@@ -5,11 +5,22 @@ namespace CardGame
 {
     public class Player
     {
-        int userId;
+        int id;
         string name;
+        string password;
         int totalGameWon;
         int totalGamePlayed;
         double wonRatio;
+
+
+        /// <summary>
+        /// Setter and getter of username
+        /// </summary>
+        public int Id
+        {
+            get { return id; }
+            set { id = value; }
+        }
 
 
         /// <summary>
@@ -19,6 +30,16 @@ namespace CardGame
         {
             get { return name; }
             set { name = value; }
+        }
+
+
+        /// <summary>
+        /// Setter and getter of username
+        /// </summary>
+        public string Password
+        {
+            get { return password; }
+            set { password = value; }
         }
 
 
@@ -73,8 +94,7 @@ namespace CardGame
         /// </summary>
         public void showUserInfo()
         {
-            Console.WriteLine($"\n\nInfo of {name}(ID {userId}):" +
-                $"Game Played:{totalGamePlayed} || Game Won:{totalGameWon} || Won Ratio:{wonRatio}");
+            Console.WriteLine($"{name} (ID {id}) || Game Played {totalGamePlayed} || Game Won {totalGameWon} || Won Ratio {wonRatio}");
         }
 
     }

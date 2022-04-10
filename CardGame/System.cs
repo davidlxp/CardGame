@@ -7,8 +7,8 @@ namespace CardGame
     {
         ElevenChecker checker = new ElevenChecker();                               // Init Checker for the game
 
-        Dictionary<string, string> credential = new Dictionary<string, string>();  // A dictionary store player name and their password
         Dictionary<string, Player> playerInfo = new Dictionary<string, Player>();  // A dictionary store player name and their detailed information
+        string activePlayer;                                                       // The username of players who logged-in to the system
 
         int numCardsOnBoard;                                                       // Number of cards on gameboard for this game
 
@@ -27,26 +27,177 @@ namespace CardGame
         /// </summary>
         public void runProgram()
         {
-            int choice = mainMenu();
+            bool loggedIn = false;              // variable indicates player loggedIn or not
 
-            while (choice != 2)
+            /* 1. Show user the login page */
+            int choice = loginMenu();
+            while (choice != 3)
             {
-                if (choice == 1)
-                    startGame();
-                else
-                    Console.WriteLine("Invalid selection, please reselect!");
+                switch (choice)
+                {
+                    case 1:
+                        login(ref loggedIn);
+                        break;
+                    case 2:
+                        register(ref loggedIn);
+                        break;
+                    default:
+                        Console.WriteLine("Invalid selection, please reselect!");
+                        break;
+                }
 
-                choice = mainMenu();
+                if (loggedIn)
+                    /* 2. Show user the game page only when user logged-in */
+                    runUserProgram(ref loggedIn);
+
+                choice = loginMenu();
             }
+        }
+
+
+        /// <summary>
+        /// Menu for the login page
+        /// </summary>
+        public int loginMenu()
+        {
+            string choiceStr;
+            int choice = 0;
+
+            Console.WriteLine("\n");
+            Console.WriteLine("<*>------ Login to CardGame11 ------<*>");
+
+            while (choice == 0)
+            {
+                Console.WriteLine("1. Log In");
+                Console.WriteLine("2. Register");
+                Console.WriteLine("3. Exit the Program");
+                Console.Write("Please make a choice by typing its index: ");
+
+                choiceStr = Console.ReadLine();
+                Int32.TryParse(choiceStr, out choice);
+
+                if (choice == 0)
+                    Console.WriteLine("Invalid, please type an integer!\n");
+            }
+            return choice;
 
         }
 
 
-
-
-        private void credentialCheck()
+        /// <summary>
+        /// Function let an existing player to login
+        /// </summary>
+        private void login(ref bool loggedIn)
         {
+            int attempt = 0;            // maximum attempts to login
+            string username = "";         
+            string password = "";
 
+            while (!loggedIn && attempt < 3)
+            {
+                if (attempt == 0)
+                    Console.WriteLine("\nPlease provide your credential below");
+                else
+                    Console.WriteLine("\nCredential wrong, please try another name!\n");
+
+                Console.Write("Username: ");
+                username = Console.ReadLine();
+
+                if (playerInfo.ContainsKey(username))
+                {
+                    Console.Write("Password: ");
+                    password = Console.ReadLine();
+
+                    loggedIn = playerInfo[username].Password == password;
+                    attempt++;
+                }
+                else
+                {
+                    Console.WriteLine("The username does NOT exists, please register instead.");
+                    break;
+                }
+            }
+
+            if (loggedIn)
+            {
+                Console.Write($"Login Success! Welcome {username}!");
+
+                if (activePlayer != username)
+                    activePlayer = username;                                // set this player as active
+            }
+            else
+                Console.Write("Login Failed!");
+        }
+
+
+        /// <summary>
+        /// Function to register a new player
+        /// </summary>
+        private void register(ref bool loggedIn)
+        {
+            string username = "";
+            string password = "";
+            bool success = false;
+
+
+            while (!success)
+            {
+                Console.Write("Create your username: ");
+                username = Console.ReadLine();                     // get new username from user
+
+                if (!playerInfo.ContainsKey(username))             // validate if username exists already
+                {
+                    Console.Write("Create your password: ");
+                    password = Console.ReadLine();                 // get new password from user 
+
+                    Player newPlayer = new Player();               // create a new player
+                    newPlayer.Id = playerInfo.Count + 1;           // assign userId (auto-increment)
+                    newPlayer.Name = username;                     // assign userName
+                    newPlayer.Password = password;                 // assign password
+                    playerInfo[username] = newPlayer;              // adding the newPlayer to system
+
+                    success = true;
+
+                    loggedIn = true;                               // automatically loggin the successfully registered user
+                    if (activePlayer != username)
+                        activePlayer = username;                   // set this player as active
+                }
+                else
+                    Console.WriteLine("The username already exists, please try another name!\n");
+            }
+        }
+
+
+        /// <summary>
+        /// Run program which exclusively shows to the user who logged in
+        /// </summary>
+        public void runUserProgram(ref bool loggedIn)
+        {
+            int choice = mainMenu();
+            while (choice != 4)
+            {
+                switch (choice)
+                {
+                    case 1:                                         // start game
+                        startGame();
+                        break;
+                    case 2:                                         // see my historical score
+                        Console.WriteLine();
+                        playerInfo[activePlayer].showUserInfo();
+                        break;
+                    case 3:                                         // see the leaderboard
+                        showLeaderboard();                          
+                        break;
+                }
+                choice = mainMenu();
+            }
+
+            /* log off */
+            if (choice == 4)
+            {               
+                loggedIn = false;
+                activePlayer = "";
+            }
         }
 
 
@@ -59,13 +210,15 @@ namespace CardGame
             string choiceStr;
             int choice = 0;
 
-            Console.WriteLine();
+            Console.WriteLine("\n");
             Console.WriteLine("<*>------ CardGame11 ------<*>");
 
             while (choice == 0)
             {
                 Console.WriteLine("1. Start Game");
-                Console.WriteLine("2. Exit the Program");
+                Console.WriteLine("2. See My Historical Score");
+                Console.WriteLine("3. See Leaderboard");
+                Console.WriteLine("4. Log Off");
                 Console.Write("Please make a choice by typing its index: ");
 
                 choiceStr = Console.ReadLine();
@@ -127,11 +280,18 @@ namespace CardGame
                     Console.WriteLine("No more card can be removed. You lose the game!");
 
                 /* wrap up */
-                gameboard.showWonHistory();                                      // showing "You've won x/y games"
-                choice = continueMenu();                                         // ask user if they want to have the next round of game
+                gameboard.showWonHistory();                                                 // showing "You've won x/y games"
+                choice = continueMenu();                                                    // ask user if they want to have the next round of game
 
                 if (choice == "y")
-                    prepareNextRound(ref deck, ref gameboard);                   // prepare for the next round of game
+                    prepareNextRound(ref deck, ref gameboard);                              // prepare for the next round of game
+                else
+                {
+                    // in the end, load the game info to user's database
+                    playerInfo[activePlayer].updateGamePlayed(gameboard.getGamePlayed());   
+                    playerInfo[activePlayer].updateGameWon(gameboard.getGameWon());
+                    playerInfo[activePlayer].updateWonRatio();
+                }
             }
 
         }
@@ -254,6 +414,61 @@ namespace CardGame
             gameboard.cardsOnBoard.RemoveAll(card => card == null);     // remove all the NULL records from "cardsOnBoard" list
 
             addCardsToBoard(numReplace, ref deck, ref gameboard);       // draw same number of cards from deck and add back to "cardsOnBoard" list
+        }
+
+
+        /// <summary>
+        /// Function to show the leaderboard
+        /// </summary>
+        void showLeaderboard()
+        {
+            List<string> gamesWon = new List<string>();
+            List<string> gamesPlayed = new List<string>();
+
+            for (int i = 0; i < 3; ++i)
+            {
+                /* Finding the top players */
+                string wonName = "";
+                int maxWon = 0;
+
+                string playedName = "";
+                int maxPlayed = 0;
+
+                foreach (string name in playerInfo.Keys)
+                {
+                    int currWon = playerInfo[name].getGameWon();
+                    int currPlayed = playerInfo[name].getGamePlayed();
+
+                    if (!gamesWon.Contains(name) && currWon > maxWon)
+                    {
+                        maxWon = currWon;
+                        wonName = name;
+                    }
+
+                    if (!gamesPlayed.Contains(name) && currPlayed > maxPlayed)
+                    {
+                        maxPlayed = currPlayed;
+                        playedName = name;
+                    }
+                }
+
+                /* Adding Top player's name to lists */
+                if (wonName != "")
+                    gamesWon.Add(wonName);
+
+                if (playedName != "")
+                    gamesPlayed.Add(playedName);
+            }
+
+            /* Print the top players */
+            Console.WriteLine("\nTop3 Users by the Number of Games Won:");
+            foreach (string name in gamesWon)
+                playerInfo[name].showUserInfo();
+
+            Console.WriteLine("\nTop3 Users by the Number of Games Played:");
+            foreach (string name in gamesPlayed)
+                playerInfo[name].showUserInfo();
+
         }
 
     }
